@@ -13,7 +13,8 @@ __pycache__/
 *.log
 
 # Streamlit specific
-.streamlit/
+# Allow .streamlit directory for Streamlit Cloud configuration
+# .streamlit/
 
 # Sensitive information
 *.key

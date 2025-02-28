@@ -4,6 +4,19 @@ import plotly.express as px
 from youtube_api import YouTubeAnalyzer
 import os
 from datetime import datetime
+import dotenv
+
+# Load environment variables from .env file if it exists
+dotenv.load_dotenv()
+
+# Try to get API key from Streamlit secrets or environment variables
+def get_api_key():
+    # First try to get from Streamlit secrets
+    try:
+        return st.secrets["YOUTUBE_API_KEY"]
+    except:
+        # Then try to get from environment variables
+        return os.environ.get("YOUTUBE_API_KEY", "")
 
 # Page config
 st.set_page_config(
@@ -35,7 +48,10 @@ with st.sidebar.expander("Comment obtenir votre clé API YouTube ?"):
         - Click "+ Create Credentials" > API key
     5. Copiez la clé générée et collez-la ci-dessous
     """)
-api_key = st.sidebar.text_input("Entrez votre clé API", type="password")
+
+# Get API key from secrets or environment, or let user input it
+default_api_key = get_api_key()
+api_key = st.sidebar.text_input("Entrez votre clé API", value=default_api_key, type="password")
 
 # Search parameters
 st.sidebar.subheader("Paramètres de recherche")
@@ -122,5 +138,5 @@ if api_key:
 else:
     if not api_key:
         st.info("👆 Veuillez entrer votre clé API YouTube dans la barre latérale pour commencer l'analyse.")
-    elif not search_query:
+    elif not search_query and search_mode == "Recherche personnalisée":
         st.info("🔍 Entrez un sujet ou une niche à analyser dans la barre latérale.")
